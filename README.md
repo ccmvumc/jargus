@@ -1,2 +1,2 @@
 # jargus
-jargus processes data with help from redcap and mirrors to xnat
+jargus manages report data with help from redcap
