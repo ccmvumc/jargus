@@ -293,7 +293,7 @@ def make_pdf(info, filename):
     add_first_page(pdf, info)
 
     # Counts
-    logger..debug('adding count pages')
+    logger.debug('adding count pages')
     add_count_pages(pdf, info['tracking'])
 
     # Timeline
