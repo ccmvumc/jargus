@@ -6,6 +6,10 @@ import pandas as pd
 from ..utils_redcap import get_redcap
 from ..utils_email import send_email
 
+
+logger = logging.getLogger('jargus.reports.ImageRead')
+
+
 CLIN_NAME = 'Dr. Martin'
 CLIN_EMAIL = 'dann.martin@vumc.org'
 PROJECTID = '143314'

@@ -7,6 +7,9 @@ from ..utils_redcap import get_redcap
 from ..utils_email import send_email
 
 
+logger = logging.getLogger('jargus.reports.timeoff')
+
+
 NAME2EMAIL = {
     'Dr. Newhouse': 'paul.newhouse@vumc.org',
     'Amy Boegel': 'amy.r.boegel@vumc.org',
@@ -108,8 +111,6 @@ def get_recent(df, previous):
     if dfp is None or dfp.empty:
         return dfp
 
-    print('previous pending=', len(dfp))
-
     dfc = get_completed(df)
 
     # Ensure consistent types
@@ -128,8 +129,6 @@ def get_recent(df, previous):
 
     if dfc is None or dfc.empty:
         return dfc
-
-    print('recently completed=', len(dfc))
 
     return dfc
 
@@ -158,7 +157,6 @@ def get_approver_content(df, approver):
     list_content = ''
     list_count = len(df)
     for index, row in df.iterrows():
-        print(index, row)
         row_content = ROW_TEMPLATE.format(
             projectid=PROJECTID,
             pagename=PAGENAME,

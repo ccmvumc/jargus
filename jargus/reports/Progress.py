@@ -32,6 +32,9 @@ from ..utils_redcap import get_redcap
 from ..utils_email import send_email
 
 
+logger = logging.getLogger('jargus.reports.Progress')
+
+
 # STUDY   name_of_the_study_v2_v2
 # STATUS  enrollment_status1
 # DATE    date_given
@@ -282,7 +285,7 @@ def blank_letter():
 
 
 def make_pdf(info, filename):
-    logging.debug('making PDF')
+    logger.debug('making PDF')
 
     # Initialize a new PDF letter size and shaped
     pdf = blank_letter()
@@ -292,30 +295,30 @@ def make_pdf(info, filename):
     add_first_page(pdf, info)
 
     # Counts
-    logging.debug('adding count pages')
+    logger..debug('adding count pages')
     add_count_pages(pdf, info['tracking'])
 
     # Timeline
-    logging.debug('adding timeline page')
+    logger.debug('adding timeline page')
     add_timeline_page(pdf, info['tracking'])
 
     # QA
-    logging.debug('adding qa page')
+    logger.debug('adding qa page')
     add_qa_page(pdf, info['tracking'])
 
     # Memory Screenings
-    logging.debug('add memory screening page')
+    logger.debug('add memory screening page')
     add_mem_page(pdf, info['mem'])
 
     # Last page
     add_last_page(pdf, info)
 
     # Save to file
-    logging.debug('saving PDF to file:{}'.format(pdf.filename))
+    logger.debug('saving PDF to file:{}'.format(pdf.filename))
     try:
         pdf.output(pdf.filename)
     except Exception as err:
-        logging.error('error while saving PDF:{}:{}'.format(pdf.filename, err))
+        logger.error('error while saving PDF:{}:{}'.format(pdf.filename, err))
 
     return True
 
@@ -598,7 +601,7 @@ def plot_timeline(df, startdate=None, enddate=None):
 
             # Nothing to plot so go to next
             if dfs.empty:
-                logging.debug('nothing to plot:{}:{}'.format(urg, status))
+                logger.debug('nothing to plot:{}:{}'.format(urg, status))
                 continue
 
             # markers symbols, see https://plotly.com/python/marker-style/
@@ -646,7 +649,7 @@ def plot_timeline(df, startdate=None, enddate=None):
                     _row,
                     _col)
             except Exception as err:
-                logging.error(err)
+                logger.error(err)
                 return None
 
     # show lines so we can better distinguish categories

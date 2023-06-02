@@ -7,6 +7,10 @@ import pandas as pd
 from ..utils_redcap import get_redcap
 from ..utils_email import send_email
 
+
+logger = logging.getLogger('jargus.reports.signoff')
+
+
 PROJECTID = '131071'
 
 TABLE = '<table cellspacing="0" cellpadding="4" rules="rows" style="color:#1f2240;background-color:#ffffff">'
