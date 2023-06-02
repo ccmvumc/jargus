@@ -8,6 +8,9 @@ from ..utils_redcap import get_redcap
 from ..utils_email import send_email
 
 
+logger = logging.getLogger('jargus.reports.tracking')
+
+
 # Formatting for the html table
 TABLE = '<table cellspacing="0" cellpadding="4" rules="rows" style="color:#1f2240;background-color:#ffffff">'
 
@@ -78,7 +81,7 @@ def get_prescreeners_id2date(rc):
         elif id2date[record_id] == pdate:
             pass
         else:
-            logging.debug(f'duplicated name using latest record:{record_id}')
+            logger.debug(f'duplicated name using latest record:{record_id}')
             id2date[record_id] = pdate
 
     return id2date
@@ -122,7 +125,7 @@ def get_prescreeners_name2id(rc):
         elif name2id[name] == record_id:
             pass
         else:
-            logging.debug(f'duplicated name using latest record:{record_id}')
+            logger.debug(f'duplicated name using latest record:{record_id}')
             name2id[name] = record_id
 
     return name2id
@@ -164,7 +167,7 @@ def get_tracking_id2name(rc):
         elif id2name[record_id] == name:
             pass
         else:
-            logging.debug(f'duplicated ID using latest record:{record_id}:"{name}"')
+            logger.debug(f'duplicated ID using latest record:{record_id}:"{name}"')
             id2name[record_id] = name
 
     return id2name
@@ -293,6 +296,7 @@ def get_content(df):
 
 
 def get_status_content(df):
+    # TODO: check URG, if it's URG, highlight the row
     content = ''
     for index, row in df.iterrows():
         row_content = ROW_TEMPLATE.format(
