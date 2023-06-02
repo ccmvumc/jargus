@@ -12,15 +12,13 @@
 # at all.
 
 import itertools
-import pandas as pd
-import redcap
-
 import logging
 import io
 import re
 import os
 from datetime import datetime, date, timedelta
 
+import pandas as pd
 import plotly
 import plotly.graph_objs as go
 import plotly.subplots

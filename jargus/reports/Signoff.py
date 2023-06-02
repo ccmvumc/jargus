@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta
+import logging
 
-import redcap
 import pandas as pd
 
 from ..utils_redcap import get_redcap
