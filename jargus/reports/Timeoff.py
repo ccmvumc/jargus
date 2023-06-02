@@ -235,7 +235,7 @@ def make_report(outdir, previous):
     if previous:
         dfc = get_recent(df, previous)
 
-        if dfc:
+        if not dfc.empty:
             for i, row in dfc.iterrows():
                 _email = NAME2EMAIL[row['name']]
                 _content = get_recent_content(row)
