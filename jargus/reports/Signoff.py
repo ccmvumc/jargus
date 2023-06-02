@@ -236,7 +236,8 @@ def make_report(outdir, emailto, previous=None):
         dfc = None
 
     # Send coord email
-    _content = get_coord_content([df1, df2, df3], CLINICIANS, dfc)
+    clins = ['Nancy Morton', 'Paul Newhouse', 'Patricia Andrews']
+    _content = get_coord_content([df1, df2, df3], clins, dfc)
     send_email(_content, emailto, email_subject)
 
     return report_file
