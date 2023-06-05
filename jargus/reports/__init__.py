@@ -43,8 +43,8 @@ def _update_report(jargus, name, freq, emailto):
     # check that each has report for current month with PDF and zip
     report_date = datetime.now()
 
-    # Only run daily on weekdays after 6am
-    if freq == 'daily' and (report_data.weekday() > 4 or report_date.hour < 6):
+    # Only update reports on weekdays after 6am
+    if report_data.weekday() > 4 or report_date.hour < 6:
         return
 
     if freq == 'daily':
