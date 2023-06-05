@@ -47,6 +47,14 @@ ROW_TEMPLATE = '''<tr>
 </tr>'''
 
 
+ROW_TEMPLATE_URG = '''<tr>
+    <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v13.2.3/DataEntry/record_home.php?pid=155254&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
+    <td style="background-color: #FFFF00;">{study}</td>
+    <td style="background-color: #FFFF00;">{status}</td>
+    <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v13.2.3/DataEntry/record_home.php?pid=151393&arm=2&id={pid}" target="_blank">&nbsp;&nbsp;[{pid}]&nbsp;&nbsp;{pdate}</a></td>
+</tr>'''
+
+
 def get_prescreeners_id2date(rc):
     id2date = {}
     date_fields = [x for x in rc.field_names if x.startswith('prescreener_date') or x.startswith('date3_v2')]
@@ -299,14 +307,25 @@ def get_status_content(df):
     # TODO: check URG, if it's URG, highlight the row
     content = ''
     for index, row in df.iterrows():
-        row_content = ROW_TEMPLATE.format(
-            tid=index,
-            pid=row['PRESCREENERSID'],
-            study=row['STUDY'],
-            status=row['STATUS'],
-            pdate=row['PRESCREENERSDATE'],
-            initials=row['INITIALS'],
-        )
+        if row.get('URG', False):
+            row_content = ROW_TEMPLATE_URG.format(
+                tid=index,
+                pid=row['PRESCREENERSID'],
+                study=row['STUDY'],
+                status=row['STATUS'],
+                pdate=row['PRESCREENERSDATE'],
+                initials=row['INITIALS'],
+            )
+        else:
+            row_content = ROW_TEMPLATE.format(
+                tid=index,
+                pid=row['PRESCREENERSID'],
+                study=row['STUDY'],
+                status=row['STATUS'],
+                pdate=row['PRESCREENERSDATE'],
+                initials=row['INITIALS'],
+            )
+
         content += row_content
 
     return content
