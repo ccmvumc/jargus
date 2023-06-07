@@ -50,7 +50,7 @@ ROW_TEMPLATE = '''<tr>
 ROW_TEMPLATE_URG = '''<tr>
     <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v13.2.3/DataEntry/record_home.php?pid=155254&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
     <td style="background-color: #FFFF00;">{study}</td>
-    <td style="background-color: #FFFF00;">{status} (URG)</td>
+    <td style="background-color: #FFFF00;">{status} </td>
     <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v13.2.3/DataEntry/record_home.php?pid=151393&arm=2&id={pid}" target="_blank">&nbsp;&nbsp;[{pid}]&nbsp;&nbsp;{pdate}</a></td>
 </tr>'''
 
@@ -108,12 +108,12 @@ def get_prescreeners_name2id(rc):
         for name_field in name_fields:
             if name_field not in r:
                 continue
-            
+
             n = r[name_field]
-    
+
             # Remove any leading/trailing whitespace
             n = n.strip()
-    
+
             if n:
                 if not name:
                     # Store the new name
@@ -152,7 +152,7 @@ def get_tracking_id2name(rc):
         for name_field in name_fields:
             if name_field not in r:
                 continue
-    
+
             n = r[name_field]
             n = n.strip()
 
@@ -289,7 +289,7 @@ def get_content(df):
     for status in sorted(status_list):
         status_df = df[df.STATUS == status]
         status_content = get_status_content(status_df)
-        status_content = STATUS_TEMPLATE.format(len(status_df), status,  status_content)
+        status_content = STATUS_TEMPLATE.format(len(status_df), status, status_content)
         content += status_content
 
     content = HTML_TEMPLATE.format('CCM Tracking', len(df), content)
@@ -304,10 +304,9 @@ def get_content(df):
 
 
 def get_status_content(df):
-    # TODO: check URG, if it's URG, highlight the row
     content = ''
     for index, row in df.iterrows():
-        if row.get('URG', '') == 'URG':
+        if row.get('URG', '') == 'Yes':
             row_content = ROW_TEMPLATE_URG.format(
                 tid=index,
                 pid=row['PRESCREENERSID'],
@@ -358,8 +357,7 @@ def make_report(outdir, emailto):
     # Load open records from Tracking with link to prescreener
     df = load_tracking_open(rct, rcp)
 
-
-    # Get email content 
+    # Get email content
     content = get_content(df)
 
     # Email report content
