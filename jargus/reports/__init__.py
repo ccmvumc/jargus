@@ -45,10 +45,7 @@ def _update_report(jargus, name, freq, emailto):
 
     # Only update reports on weekdays after 6am
     if report_date.weekday() > 4 or report_date.hour < 6:
-        print('not right now')
         return
-
-    print('now is fine')
 
     if freq == 'daily':
         report_name = report_date.strftime("%Y-%m-%d")
