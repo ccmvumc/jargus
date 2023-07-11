@@ -141,7 +141,8 @@ def get_prescreeners_name2id(rc):
 
 def get_tracking_id2name(rc):
     id2name = {}
-    name_fields = ['name', 'name2', 'name3', 'participant_name', 'participant_name4']
+    name_fields = ['name', 'name2', 'name3', 'participant_name']
+    #, 'participant_name4']
     records = rc.export_records(fields=['record_id'] + name_fields)
 
     for r in records:
