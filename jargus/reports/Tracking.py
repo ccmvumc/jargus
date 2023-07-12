@@ -142,7 +142,6 @@ def get_prescreeners_name2id(rc):
 def get_tracking_id2name(rc):
     id2name = {}
     name_fields = ['name', 'name2', 'name3', 'participant_name']
-    #, 'participant_name4']
     records = rc.export_records(fields=['record_id'] + name_fields)
 
     for r in records:
@@ -176,7 +175,7 @@ def get_tracking_id2name(rc):
         elif id2name[record_id] == name:
             pass
         else:
-            logger.debug(f'duplicated ID using latest record:{record_id}:"{name}"')
+            logger.debug(f'duplicated ID, using latest record:{record_id}:"{name}"')
             id2name[record_id] = name
 
     return id2name
