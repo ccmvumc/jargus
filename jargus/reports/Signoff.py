@@ -213,11 +213,11 @@ def make_report(outdir, emailto, previous=None):
     report_file = save_data(df, outdir)
 
     # Nancy
-    df1 = get_pending(df, 'corresponding_clinician___1')
-    _name = 'Nancy Morton'
-    _content = get_html_content(df1, _name)
-    _email = 'nancy.morton@vumc.org'
-    send_email(_content, _email, email_subject)
+    #df1 = get_pending(df, 'corresponding_clinician___1')
+    #_name = 'Nancy Morton'
+    #_content = get_html_content(df1, _name)
+    #_email = 'nancy.morton@vumc.org'
+    #send_email(_content, _email, email_subject)
 
     # Newhouse
     df2 = get_pending(df, 'corresponding_clinician___2')
@@ -233,6 +233,13 @@ def make_report(outdir, emailto, previous=None):
     _email = 'patricia.andrews@vumc.org'
     send_email(_content, _email, email_subject)
 
+    # Wilson
+    df4 = get_pending(df, 'corresponding_clinician___4')
+    _name = 'Jo Ellen Wilson'
+    _content = get_html_content(df4, _name)
+    _email = 'jo.e.wilson@vumc.org'
+    send_email(_content, _email, email_subject)
+
     # Get recently completed
     if previous:
         dfc = get_completed(df, previous)
@@ -240,8 +247,8 @@ def make_report(outdir, emailto, previous=None):
         dfc = None
 
     # Send coord email
-    clins = ['Nancy Morton', 'Paul Newhouse', 'Patricia Andrews']
-    _content = get_coord_content([df1, df2, df3], clins, dfc)
+    clins = ['Paul Newhouse', 'Patricia Andrews', 'Jo Ellen Wilson']
+    _content = get_coord_content([df2, df3, df4], clins, dfc)
     send_email(_content, emailto, email_subject)
 
     return report_file
