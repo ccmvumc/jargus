@@ -4,7 +4,6 @@ Interactions with Jargus REDCap should be via the main Jargus class.
 Anything outside this class should refer to abstract reports, not redcap
 """
 import logging
-from datetime import datetime
 import os
 
 from redcap import Project, RedcapError
@@ -29,7 +28,7 @@ class Jargus:
 
     def __init__(
         self,
-        redcap_project: Project=None,
+        redcap_project: Project = None,
     ):
         """Initialize."""
         self._rc = (redcap_project or self._default_redcap())
@@ -127,7 +126,6 @@ class Jargus:
             logger.error(f'upload failed:{err}')
         except (ValueError, RedcapError) as err:
             logger.error(f'error uploading:{err}')
-
 
     def report_setting(self, name, setting):
         """Return the value of the setting."""

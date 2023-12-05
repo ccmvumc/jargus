@@ -182,7 +182,11 @@ def get_tracking_id2name(rc):
 
 
 def get_initials(name):
-    return name[0] + name.split()[1][0]
+    try:
+        return name[0] + name.split()[1][0]
+    except IndexError as err:
+        logger.debug(f'cannot find intials:{err}')
+        return ''
 
 
 def load_tracking_open(rct, rcp):
