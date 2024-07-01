@@ -10,7 +10,6 @@ def send_email(html_content, email_to, email_subject, pdf=None):
     if isinstance(email_to, str):
         email_to = [email_to]
 
-    today = datetime.now().strftime("%Y-%m-%d")
     email_host = "smtp.gmail.com"
     email_port = 465
     email_username = EMAIL_USER
@@ -18,7 +17,7 @@ def send_email(html_content, email_to, email_subject, pdf=None):
 
     msg = EmailMessage()
     msg['From'] = email_username
-    msg['Subject'] = f'{email_subject} {today}'
+    msg['Subject'] = f'{email_subject}'
     msg['To'] = email_to
     msg.set_content('html')
     msg.add_alternative(html_content, subtype='html')

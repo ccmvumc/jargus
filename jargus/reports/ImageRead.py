@@ -209,7 +209,9 @@ def load_previous_pending(filename):
 
 
 def make_report(outdir, emailto, previous=None):
-    email_subject = 'CCM Pending Image Read Report'
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    email_subject = f'CCM Pending Image Read Report {today}'
 
     # Load the redcap db
     proj = get_redcap(PROJECTID)

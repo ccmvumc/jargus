@@ -12,6 +12,7 @@ from . import Progress
 from . import Signoff
 from . import Timeoff
 from . import Tracking
+import registry
 
 
 logger = logging.getLogger('jargus.reports')
@@ -101,6 +102,8 @@ def make_report(jargus, name, outdir, emailto=None, previous=None):
         return Timeoff.make_report(outdir, previous)
     elif name == 'Tracking':
         return Tracking.make_report(outdir, emailto)
+    elif name == 'Registry':
+        return registry.make_report(outdir, emailto)
     else:
         logger.error(f'unknown report name:{name}')
         return None

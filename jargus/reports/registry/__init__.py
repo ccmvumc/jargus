@@ -1,0 +1,201 @@
+import logging
+from datetime import datetime
+import os
+
+import pandas as pd
+
+from ...utils_redcap import get_redcap
+from ...utils_email import send_email
+
+
+logger = logging.getLogger('jargus.reports.registry')
+
+
+# Formatting for the html table
+TABLE = '<table cellspacing="0" cellpadding="4" rules="rows" style="color:#1f2240;background-color:#ffffff">'
+
+# Formatting for the html table header
+TH = '<th style="text-align:left;border-bottom:thin;padding:10">'
+
+# Formatting for the html data cell
+TD = '<td style="text-align:left;">'
+
+HTML_TEMPLATE = '''<!DOCTYPE html>
+<html><body>
+    <h3>{0}: {1} Total Items Pending</h3>
+    <hr>
+    {2}
+</body></html>'''
+
+STATUS_TEMPLATE = '''
+    <h3>{0}: {1}</h3>
+    <table>
+        <tr>
+            <th>Registry ID</th>
+            <th>Study</th>
+            <th>Status</th>
+        </tr>
+        {2}
+    </table><hr>'''
+
+ROW_TEMPLATE = '''<tr>
+    <td><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid=155254&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
+    <td>{study}</td>
+    <td>{status}</td>
+</tr>'''
+
+
+ROW_TEMPLATE_URG = '''<tr>
+    <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid=155254&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
+    <td style="background-color: #FFFF00;">{study}</td>
+    <td style="background-color: #FFFF00;">{status} </td>
+    <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid=151393&arm=2&id={pid}" target="_blank">&nbsp;&nbsp;[{pid}]&nbsp;&nbsp;{pdate}</a></td>
+</tr>'''
+
+
+def get_initials(first_name, last_name):
+    try:
+        return first_name.upper()[0] + last_name.upper()[0]
+    except IndexError as err:
+        logger.debug(f'cannot find intials:{err}')
+        return ''
+
+
+def load_open(rc):
+    data = []
+
+    records = rc.export_records(
+        export_checkbox_labels=True,
+        export_blank_for_gray_form_status=True,
+        raw_or_label='label',
+    )
+
+    # Filter to only Unverified, this also excludes blanks
+    unverified = [x for x in records if x['study_eligibility_information_complete'] == 'Unverified']
+    unsaved = [x for x in records if not x['study_eligibility_information_complete']]
+
+    # process each record id
+    for r in unverified:
+        # Reset
+        new_record = {
+            'ID': r['record_id'],
+            'STUDY': '',
+            'URG': '',
+            'STATUS': 'UNKNOWN',
+            'NOTES': '',
+            'COMPLETE': '',
+            'INITIALS': '',
+        }
+
+        new_record['STUDY'] = r['study_name3']
+
+        new_record['STATUS'] = r['status_of_the_screening_vi_3']
+
+        new_record['URG'] = r['urp_definition']
+
+        first_name = r['name3_v2']
+        last_name = r['last_name_2']
+
+        if first_name and last_name:
+            new_record['INITIALS'] = get_initials(first_name, last_name)
+
+        # Append record
+        data.append(new_record)
+
+    for d in data:
+        tid = d['ID']
+        d['PRESCREENERSID'] = ''
+        d['PRESCREENERSDATE'] = ''
+
+    if len(data) > 0:
+        df = pd.DataFrame(data)
+    else:
+        df = pd.DataFrame(
+            columns=['ID', 'STUDY', 'PRESCREENERSID', 'PRESCREENERSDATE'])
+
+    df = df.set_index('ID')
+
+    return df
+
+
+def get_content(df):
+    content = ''
+
+    status_list = df['STATUS'].unique()
+
+    for status in sorted(status_list):
+        status_df = df[df.STATUS == status]
+        status_content = get_status_content(status_df)
+        status_content = STATUS_TEMPLATE.format(len(status_df), status, status_content)
+        content += status_content
+
+    content = HTML_TEMPLATE.format('CCM Registry', len(df), content)
+
+    # Interject formatting
+    content = content.replace('<table>', TABLE)
+    content = content.replace('<td>', TD)
+    content = content.replace('<th>', TH)
+    content += '<p>This report includes all records where Study Eligibility is Unverified.'
+
+    return content
+
+
+def get_status_content(df):
+    content = ''
+    for index, row in df.iterrows():
+        if row.get('URG', '') == 'Yes':
+            row_content = ROW_TEMPLATE_URG.format(
+                tid=index,
+                pid=row['PRESCREENERSID'],
+                study=row['STUDY'],
+                status=row['STATUS'],
+                pdate=row['PRESCREENERSDATE'],
+                initials=row['INITIALS'],
+            )
+        else:
+            row_content = ROW_TEMPLATE.format(
+                tid=index,
+                pid=row['PRESCREENERSID'],
+                study=row['STUDY'],
+                status=row['STATUS'],
+                pdate=row['PRESCREENERSDATE'],
+                initials=row['INITIALS'],
+            )
+
+        content += row_content
+
+    return content
+
+
+def save_data(df, outdir):
+    name = 'registry'
+    now = datetime.now().strftime("%Y-%m-%d")
+    filename = os.path.join(outdir, f'{name}_report_{now}.xlsx')
+    if os.path.exists(filename):
+        now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = os.path.join(outdir, f'{name}_report_{now}.xlsx')
+
+    df.to_excel(filename)
+
+    return filename
+
+
+def make_report(outdir, emailto):
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    subject = f'CCM Registry {today}'
+
+    # Get Registry redcap
+    rc = get_redcap('183871')
+
+    # Load open records
+    df = load_open(rc)
+
+    # Get email content
+    content = get_content(df)
+
+    # Email report content
+    send_email(content, emailto, subject)
+
+    # Return the report data for saving
+    return save_data(df, outdir)

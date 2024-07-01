@@ -203,7 +203,9 @@ def save_data(df, outdir):
 
 
 def make_report(outdir, emailto, previous=None):
-    email_subject = 'CCM Pending Signature Report'
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    email_subject = f'CCM Pending Signature Report {today}'
 
     # Load the doc signing db
     proj = get_redcap(PROJECTID)
