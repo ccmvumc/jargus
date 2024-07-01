@@ -12,7 +12,7 @@ from . import Progress
 from . import Signoff
 from . import Timeoff
 from . import Tracking
-import registry
+from . import registry
 
 
 logger = logging.getLogger('jargus.reports')
