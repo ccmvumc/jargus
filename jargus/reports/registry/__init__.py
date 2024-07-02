@@ -10,6 +10,8 @@ from ...utils_email import send_email
 
 logger = logging.getLogger('jargus.reports.registry')
 
+# Redcap project ID
+PID = '183871'
 
 # Formatting for the html table
 TABLE = '<table cellspacing="0" cellpadding="4" rules="rows" style="color:#1f2240;background-color:#ffffff">'
@@ -39,17 +41,16 @@ STATUS_TEMPLATE = '''
     </table><hr>'''
 
 ROW_TEMPLATE = '''<tr>
-    <td><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid=155254&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
+    <td><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid={pid}&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
     <td>{study}</td>
     <td>{status}</td>
 </tr>'''
 
 
 ROW_TEMPLATE_URG = '''<tr>
-    <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid=155254&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
+    <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid={pid}&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
     <td style="background-color: #FFFF00;">{study}</td>
     <td style="background-color: #FFFF00;">{status} </td>
-    <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid=151393&arm=2&id={pid}" target="_blank">&nbsp;&nbsp;[{pid}]&nbsp;&nbsp;{pdate}</a></td>
 </tr>'''
 
 
@@ -104,14 +105,12 @@ def load_open(rc):
 
     for d in data:
         tid = d['ID']
-        d['PRESCREENERSID'] = ''
-        d['PRESCREENERSDATE'] = ''
 
     if len(data) > 0:
         df = pd.DataFrame(data)
     else:
         df = pd.DataFrame(
-            columns=['ID', 'STUDY', 'PRESCREENERSID', 'PRESCREENERSDATE'])
+            columns=['ID', 'STUDY'])
 
     df = df.set_index('ID')
 
@@ -146,20 +145,18 @@ def get_status_content(df):
         if row.get('URG', '') == 'Yes':
             row_content = ROW_TEMPLATE_URG.format(
                 tid=index,
-                pid=row['PRESCREENERSID'],
                 study=row['STUDY'],
                 status=row['STATUS'],
-                pdate=row['PRESCREENERSDATE'],
                 initials=row['INITIALS'],
+                pid=PID,
             )
         else:
             row_content = ROW_TEMPLATE.format(
                 tid=index,
-                pid=row['PRESCREENERSID'],
                 study=row['STUDY'],
                 status=row['STATUS'],
-                pdate=row['PRESCREENERSDATE'],
                 initials=row['INITIALS'],
+                pid=PID,
             )
 
         content += row_content
@@ -186,7 +183,7 @@ def make_report(outdir, emailto):
     subject = f'CCM Registry {today}'
 
     # Get Registry redcap
-    rc = get_redcap('183871')
+    rc = get_redcap(PID)
 
     # Load open records
     df = load_open(rc)
