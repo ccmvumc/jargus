@@ -53,6 +53,8 @@ ROW_TEMPLATE_URG = '''<tr>
     <td style="background-color: #FFFF00;">{status} </td>
 </tr>'''
 
+PRESCREENER_TEMPLATE = '''<td><a href="https://redcap.vumc.org/redcap_v14.5.2/DataEntry/index.php?pid={pid}&id={tid}&page={ppage}&event_id={eid}&instance={rid}" target="_blank"> Prescreener: {ptype} {pdate}</a></td>'''
+
 
 def get_initials(first_name, last_name):
     try:
@@ -90,7 +92,19 @@ def load_open(rc):
 
         new_record['STUDY'] = r['study_name3']
 
+        # Find the latest status
         new_record['STATUS'] = r['status_of_the_screening_vi_3']
+
+        if not new_record['STATUS']:
+            new_record['STATUS'] = r['prescreener_status']
+            if new_record['STATUS']:
+                new_record['STATUS'] = 'Prescreener Approved? ' + new_record['STATUS']
+
+        if not new_record['STATUS']:
+            new_record['STATUS'] = r['recruitetment_status']
+
+        if not new_record['STATUS']:
+            new_record['STATUS'] = 'TBD'
 
         new_record['URG'] = r['urp_definition']
 
@@ -99,6 +113,28 @@ def load_open(rc):
 
         if first_name and last_name:
             new_record['INITIALS'] = get_initials(first_name, last_name)
+
+        for p in records:
+            # Find the prescreeners, select the latest, link it
+            if p['record_id'] == new_record['ID'] and p['redcap_event_name'] == 'Prescreeners':
+                if p['adni4_complete']:
+                    new_record['PRID'] = p['redcap_repeat_instance']
+                    new_record['EID'] = '457242'
+                    new_record['PDATE'] = p['prescreener_date2_v2']
+                    new_record['PTYPE'] = 'ADNI4'
+                    new_record['PPAGE'] = 'adni4'
+                elif p['trcds_complete']:
+                    new_record['PRID'] = p['redcap_repeat_instance']
+                    new_record['EID'] = '457242'
+                    new_record['PDATE'] = p['date3_v2_v2']
+                    new_record['PTYPE'] = 'TRC-DS'
+                    new_record['PPAGE'] = 'trcds'
+                elif p['abate_complete']:
+                    new_record['PRID'] = p['redcap_repeat_instance']
+                    new_record['EID'] = '457242'
+                    new_record['PDATE'] = p['prescreener_date_abate']
+                    new_record['PTYPE'] = 'ABATE'
+                    new_record['PPAGE'] = 'abate'
 
         # Append record
         data.append(new_record)
@@ -113,6 +149,8 @@ def load_open(rc):
             columns=['ID', 'STUDY'])
 
     df = df.set_index('ID')
+
+    df = df.fillna('')
 
     return df
 
@@ -158,6 +196,17 @@ def get_status_content(df):
                 initials=row['INITIALS'],
                 pid=PID,
             )
+
+        if row.get('PDATE', False):
+            row_content = row_content[:-5] + PRESCREENER_TEMPLATE.format(
+                tid=index,
+                ptype=row['PTYPE'],
+                ppage=row['PPAGE'],
+                rid=row['PRID'],
+                eid=row['EID'],
+                pid=PID,
+                pdate=row['PDATE'],
+            ) + '</tr>'
 
         content += row_content
 
