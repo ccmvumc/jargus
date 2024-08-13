@@ -93,10 +93,10 @@ def load_open(rc):
         new_record['STUDY'] = r['study_name3']
 
         # Find the latest status
-        new_record['STATUS'] = r['recruitment_status']
+        new_record['STATUS'] = r['status_of_the_screening_vi_3']
 
         if not new_record['STATUS']:
-            new_record['STATUS'] = r['status_of_the_screening_vi_3']
+            new_record['STATUS'] = r['recruitment_status']
 
         if not new_record['STATUS']:
             new_record['STATUS'] = 'TBD'
