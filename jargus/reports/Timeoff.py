@@ -14,11 +14,6 @@ logger = logging.getLogger('jargus.reports.timeoff')
 NAME2EMAIL = {
     'Dr. Newhouse': 'paul.newhouse@vumc.org',
     'Amy Boegel': 'amy.r.boegel@vumc.org',
-    'Xuewen': 'xuewen.gong.1@vumc.org',
-    'Nancy': 'nancy.mortong@vumc.org',
-    'Rachel Schlossberg': 'rachel.schlossberg@vumc.org',
-    'Brittany Bosko': 'brittany.j.bosko@vumc.org',
-    'Shirin': 'shirin.pulous@vumc.org',
     'Sydni Hill': 'sydni.hill@vumc.org'}
 
 
