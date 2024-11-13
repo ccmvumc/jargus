@@ -64,6 +64,185 @@ def get_initials(first_name, last_name):
         return ''
 
 
+def load_all(rc):
+    data = []
+
+    records = rc.export_records(
+        export_checkbox_labels=True,
+        export_blank_for_gray_form_status=True,
+        raw_or_label='label',
+    )
+
+    registry = [x for x in records if x['redcap_event_name'] == 'CCM Registry']
+
+    # process each record id
+    for r in registry:
+        # Reset
+        d = {
+            'ID': r['record_id'],
+            'STUDY': '',
+            'URG': '',
+            'STATUS': 'TBD',
+            'NOTES': '',
+            'COMPLETE': '',
+            'INITIALS': '',
+            'SOURCE': '',
+            'SOURCE2': '',
+            'MDATE': '',
+            'MTYPE': '',
+            'MSCORE': '',
+            'MRESULT': '',
+        }
+
+        # Get them memory screening
+        if r['memory_assessment_score_v2']:
+            d['MSCORE'] = r['memory_assessment_score_v2']
+            d['MDATE'] = r['when_is_the_memory_screeni_v2']
+
+            if r['what_memory_assessment_did_v2___1']:
+                d['MTYPE'] = r['what_memory_assessment_did_v2___1']
+            elif r['what_memory_assessment_did_v2___2']:
+                d['MTYPE'] = r['what_memory_assessment_did_v2___2']
+            elif r['what_memory_assessment_did_v2___3']:
+                d['MTYPE'] = r['what_memory_assessment_did_v2___3']
+
+            d['MRESULT'] = r['impaired_v2']
+
+        # Get the source information
+        if r['referral_source']:
+            d['SOURCE'] = r['referral_source']
+            if r['physician_referals']:
+                d['SOURCE2'] = r['physician_referals']
+
+        d['STUDY'] = r['study_name3']
+
+        # Find the latest status
+        if r['status_of_the_screening_vi_3']:
+            d['STATUS'] = r['status_of_the_screening_vi_3']
+        elif r['recruitment_status']:
+            d['STATUS'] = r['recruitment_status']
+
+        d['URG'] = r['urp_definition']
+
+        first_name = r['name3_v2']
+        last_name = r['last_name_2']
+
+        if first_name and last_name:
+            d['INITIALS'] = get_initials(first_name, last_name)
+
+        for p in records:
+            # Find the prescreeners, select the latest, link it
+            if p['record_id'] == d['ID'] and \
+               p['redcap_event_name'] == 'Prescreeners':
+                if p['adni4_complete']:
+                    d['PRID'] = p['redcap_repeat_instance']
+                    d['EID'] = '457242'
+                    d['PDATE'] = p['prescreener_date2_v2']
+                    d['PTYPE'] = 'ADNI4'
+                    d['PPAGE'] = 'adni4'
+                    d['ADATE'] = p['date_v2_v2_v2_v2_v2']
+                elif p['trcds_complete']:
+                    d['PRID'] = p['redcap_repeat_instance']
+                    d['EID'] = '457242'
+                    d['PDATE'] = p['date3_v2_v2']
+                    d['PTYPE'] = 'TRC-DS'
+                    d['PPAGE'] = 'trcds'
+                    d['ADATE'] = p['date1212_v2_v2']
+                elif p['abate_complete']:
+                    d['PRID'] = p['redcap_repeat_instance']
+                    d['EID'] = '457242'
+                    d['PDATE'] = p['prescreener_date_abate']
+                    d['PTYPE'] = 'ABATE'
+                    d['PPAGE'] = 'abate'
+                    d['ADATE'] = p['date1212_v2_v2_v2']
+
+        # Append record
+        data.append(d)
+
+    if len(data) > 0:
+        df = pd.DataFrame(data)
+    else:
+        df = pd.DataFrame(
+            columns=['ID', 'STUDY'])
+
+    df = df.set_index('ID')
+
+    df = df.fillna('')
+
+    return df
+
+
+def load_prescreeners(rc):
+    # Load data as a record per prescreener, allows multiple prescreener
+    # records per participant.
+    data = []
+
+    records = rc.export_records(
+        export_checkbox_labels=True,
+        export_blank_for_gray_form_status=True,
+        raw_or_label='label',
+    )
+
+    # Get prescreener records
+    for r in [x for x in records if x['redcap_event_name'] == 'Prescreeners']:
+        # Reset
+        new_record = {
+            'ID': r['record_id'],
+            'STATUS': 'TBD'
+        }
+
+        if r['adni4_complete']:
+            new_record['EID'] = '457242'
+            new_record['PDATE'] = r['prescreener_date2_v2']
+            new_record['PTYPE'] = 'ADNI4'
+            new_record['PPAGE'] = 'adni4'
+        elif r['trcds_complete']:
+            new_record['EID'] = '457242'
+            new_record['PDATE'] = r['date3_v2_v2']
+            new_record['PTYPE'] = 'TRC-DS'
+            new_record['PPAGE'] = 'trcds'
+        elif r['abate_complete']:
+            new_record['EID'] = '457242'
+            new_record['PDATE'] = r['prescreener_date_abate']
+            new_record['PTYPE'] = 'ABATE'
+            new_record['PPAGE'] = 'abate'
+        else:
+            continue
+
+        # Append record
+        data.append(new_record)
+
+    # Get info from main record
+    for d in data:
+        for r in records:
+            if d['ID'] != r['record_id']:
+                continue
+
+            if r['urp_definition']:
+                d['URG'] = r['urp_definition']
+
+            if r['study_name3']:
+                d['STUDY'] = r['study_name3']
+
+            # Find the latest status
+            if r['status_of_the_screening_vi_3']:
+                # Status in this field overrides all
+                d['STATUS'] = r['status_of_the_screening_vi_3']
+            elif r['recruitment_status']:
+                # Use this field otherwise
+                d['STATUS'] = r['recruitment_status']
+
+    if len(data) > 0:
+        df = pd.DataFrame(data)
+    else:
+        df = pd.DataFrame(columns=['ID'])
+
+    df = df.set_index('ID')
+    df = df.fillna('')
+
+    return df
+
+
 def load_open(rc):
     data = []
 
