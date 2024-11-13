@@ -119,8 +119,8 @@ def load_all(rc):
         # Find the latest status
         if r['status_of_the_screening_vi_3']:
             d['STATUS'] = r['status_of_the_screening_vi_3']
-        elif r['recruitment_status']:
-            d['STATUS'] = r['recruitment_status']
+        elif r['recruitetment_status']:
+            d['STATUS'] = r['recruitetment_status']
 
         d['URG'] = r['urp_definition']
 
@@ -228,9 +228,9 @@ def load_prescreeners(rc):
             if r['status_of_the_screening_vi_3']:
                 # Status in this field overrides all
                 d['STATUS'] = r['status_of_the_screening_vi_3']
-            elif r['recruitment_status']:
+            elif r['recruitetment_status']:
                 # Use this field otherwise
-                d['STATUS'] = r['recruitment_status']
+                d['STATUS'] = r['recruitetment_status']
 
     if len(data) > 0:
         df = pd.DataFrame(data)
@@ -275,7 +275,7 @@ def load_open(rc):
         new_record['STATUS'] = r['status_of_the_screening_vi_3']
 
         if not new_record['STATUS']:
-            new_record['STATUS'] = r['recruitment_status']
+            new_record['STATUS'] = r['recruitetment_status']
 
         if not new_record['STATUS']:
             new_record['STATUS'] = 'TBD'
