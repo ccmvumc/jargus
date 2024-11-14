@@ -35,6 +35,7 @@ STATUS_TEMPLATE = '''
     <table>
         <tr>
             <th>Registry ID</th>
+            <th>DB</th>
             <th>Study</th>
             <th>Status</th>
         </tr>
@@ -43,6 +44,7 @@ STATUS_TEMPLATE = '''
 
 ROW_TEMPLATE = '''<tr>
     <td><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid={pid}&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
+    <td>{oldnew}</td>
     <td>{study}</td>
     <td>{status}</td>
 </tr>'''
@@ -50,7 +52,8 @@ ROW_TEMPLATE = '''<tr>
 
 ROW_TEMPLATE_URG = '''<tr>
     <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid={pid}&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
-    <td style="background-color: #FFFF00;">{study}</td>
+    <td style="background-color: #FFFF00;">{oldnew} </td>
+    <td style="background-color: #FFFF00;">{study}  </td>
     <td style="background-color: #FFFF00;">{status} </td>
 </tr>'''
 
@@ -103,7 +106,7 @@ def load_open(rc):
                 new_record['STATUS'] = r['recruitment_status']
 
         if not new_record['STATUS']:
-            new_record['STATUS'] = 'TBD'
+            new_record['STATUS'] = 'Blank'
 
         new_record['URG'] = r['urp_definition']
 
@@ -186,6 +189,7 @@ def get_status_content(df):
                 status=row['STATUS'],
                 initials=row['INITIALS'],
                 pid=row['PID'],
+                oldnew=row['OLDNEW'],
             )
         else:
             row_content = ROW_TEMPLATE.format(
@@ -194,6 +198,7 @@ def get_status_content(df):
                 status=row['STATUS'],
                 initials=row['INITIALS'],
                 pid=row['PID'],
+                oldnew=row['OLDNEW'],
             )
 
         if row.get('PDATE', False):
@@ -239,9 +244,18 @@ def make_report(outdir, emailto):
     # Set PID of database
     df['PID'] = PID
 
+    # Make similar statuses
+    df['STATUS'] = df.STATUS.replace(to_replace={
+        'Pending Approval by the PI': 'Pending Approval'
+    })
+    df['OLDNEW'] = 'old'
+
     # Load second version of registry
     dfb = load_open(get_redcap(PIDB))
     dfb['PID'] = PIDB
+    dfb['OLDNEW'] = 'new'
+
+    # Concat old and new redcap databases
     df = pd.concat([df, dfb])
 
     # Get email content
