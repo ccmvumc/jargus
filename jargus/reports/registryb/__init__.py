@@ -100,13 +100,7 @@ def load_open(rc):
         new_record['STATUS'] = r['status_of_the_screening_vi_3']
 
         if not new_record['STATUS']:
-            if 'recruitetment_status' in rc.field_names:
-                new_record['STATUS'] = r['recruitetment_status']
-            else:
-                new_record['STATUS'] = r['recruitment_status']
-
-        if not new_record['STATUS']:
-            new_record['STATUS'] = 'Blank'
+            new_record['STATUS'] = r.get('recruitment_status', r.get('recruitetment_status', 'Blank'))
 
         new_record['URG'] = r['urp_definition']
 
