@@ -104,7 +104,7 @@ def make_report(jargus, name, outdir, emailto=None, previous=None):
     elif name == 'Tracking':
         return Tracking.make_report(outdir, emailto)
     elif name == 'Registry':
-        return registry.make_report(outdir, emailto)
+        return registryb.make_report(outdir, emailto)
     else:
         logger.error(f'unknown report name:{name}')
         return None
