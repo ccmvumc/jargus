@@ -13,6 +13,7 @@ logger = logging.getLogger('jargus.reports.registryb')
 # Redcap project ID
 PID = '183871'
 PIDB = '193661'
+EIDB = '513529'
 
 # Formatting for the html table
 TABLE = '<table cellspacing="0" cellpadding="4" rules="rows" style="color:#1f2240;background-color:#ffffff">'
@@ -115,25 +116,25 @@ def load_open(rc):
             if p['record_id'] == new_record['ID'] and p['redcap_event_name'] == 'Prescreeners':
                 if p['adni4_complete']:
                     new_record['PRID'] = p['redcap_repeat_instance']
-                    new_record['EID'] = '457242'
+                    new_record['EID'] = EIDB
                     new_record['PDATE'] = p['prescreener_date2_v2']
                     new_record['PTYPE'] = 'ADNI4'
                     new_record['PPAGE'] = 'adni4'
                 elif p['trcds_complete']:
                     new_record['PRID'] = p['redcap_repeat_instance']
-                    new_record['EID'] = '457242'
+                    new_record['EID'] = EIDB
                     new_record['PDATE'] = p['date3_v2_v2']
                     new_record['PTYPE'] = 'TRC-DS'
                     new_record['PPAGE'] = 'trcds'
                 elif p['abate_complete']:
                     new_record['PRID'] = p['redcap_repeat_instance']
-                    new_record['EID'] = '457242'
+                    new_record['EID'] = EIDB
                     new_record['PDATE'] = p['prescreener_date_abate']
                     new_record['PTYPE'] = 'ABATE'
                     new_record['PPAGE'] = 'abate'
                 elif p['start_complete']:
                     new_record['PRID'] = p['redcap_repeat_instance']
-                    new_record['EID'] = '457242'
+                    new_record['EID'] = EIDB
                     new_record['PDATE'] = p['prescreener_date_abate']
                     new_record['PTYPE'] = 'START'
                     new_record['PPAGE'] = 'start'
