@@ -131,6 +131,13 @@ def load_open(rc):
                     new_record['PDATE'] = p['prescreener_date_abate']
                     new_record['PTYPE'] = 'ABATE'
                     new_record['PPAGE'] = 'abate'
+                elif p['start_complete']:
+                    new_record['PRID'] = p['redcap_repeat_instance']
+                    new_record['EID'] = '457242'
+                    new_record['PDATE'] = p['prescreener_date_abate']
+                    new_record['PTYPE'] = 'START'
+                    new_record['PPAGE'] = 'start'
+
 
         # Append record
         data.append(new_record)
