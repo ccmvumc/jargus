@@ -132,7 +132,7 @@ def load_open(rc):
                     new_record['PDATE'] = p['prescreener_date_abate']
                     new_record['PTYPE'] = 'ABATE'
                     new_record['PPAGE'] = 'abate'
-                elif p['start_complete']:
+                elif p.get('start_complete', False):
                     new_record['PRID'] = p['redcap_repeat_instance']
                     new_record['EID'] = EIDB
                     new_record['PDATE'] = p['prescreener_date_abate']
