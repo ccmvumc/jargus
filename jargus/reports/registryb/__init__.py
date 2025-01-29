@@ -135,7 +135,7 @@ def load_open(rc):
                 elif p.get('start_complete', False):
                     new_record['PRID'] = p['redcap_repeat_instance']
                     new_record['EID'] = EIDB
-                    new_record['PDATE'] = p['prescreener_date_abate']
+                    new_record['PDATE'] = p['prescreener_date2_v2_v2']
                     new_record['PTYPE'] = 'START'
                     new_record['PPAGE'] = 'start'
 
