@@ -41,7 +41,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 </body</html>'''
 
 ROW_TEMPLATE = '''<tr>
-    <td><a href="https://redcap.vanderbilt.edu/redcap_v12.0.3/DataEntry/index.php?pid=143314&id={recordid}&page=mri_reviews" target="_blank">&nbsp;&nbsp;{recordid}&nbsp;&nbsp;</a></td>
+    <td><a href="https://redcap.vumc.org/redcap_v15.1.1/DataEntry/index.php?pid=143314&id={recordid}&page=mri_reviews" target="_blank">&nbsp;&nbsp;{recordid}&nbsp;&nbsp;</a></td>
     <td>{study}</td>
     <td>{subjectid}</td>
     <td>{coordinator}</td>
@@ -66,7 +66,7 @@ DONE_TEMPLATE = '''<!DOCTYPE html>
 </body</html>'''
 
 DONEROW_TEMPLATE = '''<tr>
-    <td><a href="https://redcap.vanderbilt.edu/redcap_v12.0.3/DataEntry/index.php?pid=143314&id={recordid}&page=mri_reviews" target="_blank">&nbsp;&nbsp;{recordid}&nbsp;&nbsp;</a></td>
+    <td><a href="https://redcap.vumc.org/redcap_v15.1.1/DataEntry/index.php?pid=143314&id={recordid}&page=mri_reviews" target="_blank">&nbsp;&nbsp;{recordid}&nbsp;&nbsp;</a></td>
     <td>{study}</td>
     <td>{subjectid}</td>
     <td>{coordinator}</td>

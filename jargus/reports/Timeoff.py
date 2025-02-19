@@ -46,7 +46,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 </body</html>'''
 
 ROW_TEMPLATE = '''<tr>
-    <td><a href="https://redcap.vanderbilt.edu/redcap_v12.2.2/DataEntry/index.php?pid={projectid}&page={pagename}&id={recordid}&event_id={eventid}&instance={instanceid}" target="_blank">&nbsp;&nbsp;{recordid} ({instanceid})&nbsp;&nbsp;</a></td>
+    <td><a href="https://redcap.vumc.org/redcap_v15.1.1/DataEntry/index.php?pid={projectid}&page={pagename}&id={recordid}&event_id={eventid}&instance={instanceid}" target="_blank">&nbsp;&nbsp;{recordid} ({instanceid})&nbsp;&nbsp;</a></td>
     <td>{name}</td>
     <td>{startdate}</td>
     <td>{enddate}</td>

@@ -73,7 +73,7 @@ def get_redcap(project_id, key_file=None, api_url=None, api_key=None):
     key_file = os.environ.get('REDCAP_API_KEYFILE', key_file)
 
     if not api_url:
-        api_url = 'https://redcap.vanderbilt.edu/api/'
+        api_url = 'https://redcap.vumc.org/api/'
 
     if not api_key:
         # key not specified so we read it from file
@@ -127,7 +127,7 @@ def get_projectid(projectname, keyfile):
 
 
 def get_jargus_redcap():
-    api_url = 'https://redcap.vanderbilt.edu/api/'
+    api_url = 'https://redcap.vumc.org/api/'
     keyfile = os.path.join(os.path.expanduser('~'), '.redcap.txt')
 
     # Check for overrides in environment vars

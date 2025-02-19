@@ -44,7 +44,7 @@ STATUS_TEMPLATE = '''
     </table><hr>'''
 
 ROW_TEMPLATE = '''<tr>
-    <td><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid={pid}&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
+    <td><a href="https://redcap.vumc.org/redcap_v15.1.1/DataEntry/record_home.php?pid={pid}&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
     <td>{oldnew}</td>
     <td>{study}</td>
     <td>{status}</td>
@@ -52,13 +52,13 @@ ROW_TEMPLATE = '''<tr>
 
 
 ROW_TEMPLATE_URG = '''<tr>
-    <td style="background-color: #FFFF00;"><a href="https://redcap.vanderbilt.edu/redcap_v14.4.0/DataEntry/record_home.php?pid={pid}&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
+    <td style="background-color: #FFFF00;"><a href="https://redcap.vumc.org/redcap_v15.1.1/DataEntry/record_home.php?pid={pid}&arm=1&id={tid}" target="_blank">&nbsp;&nbsp;[{tid}] {initials}&nbsp;&nbsp;</a></td>
     <td style="background-color: #FFFF00;">{oldnew} </td>
     <td style="background-color: #FFFF00;">{study}  </td>
     <td style="background-color: #FFFF00;">{status} </td>
 </tr>'''
 
-PRESCREENER_TEMPLATE = '''<td><a href="https://redcap.vumc.org/redcap_v14.5.2/DataEntry/index.php?pid={pid}&id={tid}&page={ppage}&event_id={eid}&instance={rid}" target="_blank"> Prescreener: {ptype} {pdate}</a></td>'''
+PRESCREENER_TEMPLATE = '''<td><a href="https://redcap.vumc.org/redcap_v15.1.1/DataEntry/index.php?pid={pid}&id={tid}&page={ppage}&event_id={eid}&instance={rid}" target="_blank"> Prescreener: {ptype} {pdate}</a></td>'''
 
 
 def get_initials(first_name, last_name):

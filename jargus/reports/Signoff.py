@@ -35,7 +35,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 </body</html>'''
 
 ROW_TEMPLATE = '''<tr>
-    <td><a href="https://redcap.vanderbilt.edu/redcap_v11.0.0/DataEntry/index.php?pid=131071&id={recordid}&page=clinician_signature" target="_blank">&nbsp;&nbsp;{recordid}&nbsp;&nbsp;</a></td>
+    <td><a href="https://redcap.vumc.org/redcap_v15.1.1/DataEntry/index.php?pid=131071&id={recordid}&page=clinician_signature" target="_blank">&nbsp;&nbsp;{recordid}&nbsp;&nbsp;</a></td>
     <td>{study}</td>
     <td>{subjectid}</td>
     <td>{coordinator}</td>
@@ -58,7 +58,7 @@ DONE_TEMPLATE = '''<!DOCTYPE html>
 </body</html>'''
 
 DONEROW_TEMPLATE = '''<tr>
-    <td><a href="https://redcap.vanderbilt.edu/redcap_v11.0.0/DataEntry/index.php?pid=131071&id={recordid}&page=clinician_signature" target="_blank">&nbsp;&nbsp;{recordid}&nbsp;&nbsp;</a></td>
+    <td><a href="https://redcap.vumc.org/redcap_v15.1.1/DataEntry/index.php?pid=131071&id={recordid}&page=clinician_signature" target="_blank">&nbsp;&nbsp;{recordid}&nbsp;&nbsp;</a></td>
     <td>{study}</td>
     <td>{subjectid}</td>
     <td>{coordinator}</td>
