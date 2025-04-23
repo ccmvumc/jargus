@@ -70,6 +70,7 @@ def get_initials(first_name, last_name):
 
 
 def load_open(rc):
+    ''' Loads open records, i.e. with status of unverified in REDCap'''
     data = []
 
     records = rc.export_records(
@@ -103,11 +104,17 @@ def load_open(rc):
         if not new_record['STATUS']:
             new_record['STATUS'] = r.get('recruitment_status', r.get('recruitetment_status', 'Blank'))
 
-        new_record['URG'] = r['urp_definition']
+        # Look for URG value and names in main record of same subject
+        first_name = None
+        last_name = None
+        for p in records:
+            if p['record_id'] == new_record['ID'] and p['redcap_repeat_instrument'] == '' and p['redcap_event_name'] == 'CCM Registry':
+                # Get the URG (under-represented-group) value
+                new_record['URG'] = p['urp_definition']
+                first_name = p['name3_v2']
+                last_name = p['last_name_2']
 
-        first_name = r['name3_v2']
-        last_name = r['last_name_2']
-
+        # Convert name to initials
         if first_name and last_name:
             new_record['INITIALS'] = get_initials(first_name, last_name)
 
